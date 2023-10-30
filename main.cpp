@@ -25,6 +25,30 @@ public:
 
     }
     // Adding required "get" functions
+    double getPos();
+    double getVel();
+    double getLoiter_Time();
+    string getOrigin();
+    string getDestination();
+    bool getAt_SCE();
+    // Adding required "set" functions
+    void setVel(double);
+    void setLoiter_Time(double);
+    // Required functions "distance_to_SCE", "time_on_ground", "plane_type", "draw_from_normal_dist"
+    double distance_to_SCE()
+    {
+
+        return 0;       // Later change what the function returns
+    }
+    virtual void time_on_ground()       // Might need to change "void"
+    {
+        
+    }
+    virtual string plane_type()
+    {
+
+        return 0;       // Later change what the function returns
+    }
     
 };
 
