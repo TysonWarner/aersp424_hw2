@@ -14,12 +14,8 @@ private:
     double pos, vel, distance, loiter_time;
     bool at_SCE;
     string origin, destination;
-
     // Container from Question 1
     map<pair<string, string>, int> DistanceMap;
-
-
-
 public:
     // Constructor taking in two strings “from” and “to” as input arguments
     Plane(string& from, string& to)
@@ -30,7 +26,6 @@ public:
         DistanceMap[{"PHL", "SCE"}] = 160;
         DistanceMap[{"ORD", "SCE"}] = 640;
         DistanceMap[{"EWR", "SCE"}] = 220;
-
         // Storing input strings
         origin = from;
         destination = to;
@@ -40,12 +35,10 @@ public:
     // Virtual Deconstructor
     virtual ~Plane()
     {
-
     }
     // “operate” function with a double variable “dt” as an input, and return nothing (void)
     void operate(double dt)
     {
-
         if (loiter_time!=0.0)
         {
             loiter_time -= dt;
@@ -78,7 +71,6 @@ public:
                 }
             }
         }
-
     }
     // Adding required "get" functions
     double getPos() const
@@ -125,7 +117,6 @@ public:
     }
     virtual void time_on_ground()       // Might need to change "void"
     {
-        
     }
     virtual string plane_type()
     {
@@ -138,13 +129,26 @@ public:
         std::normal_distribution<> d{ m, sd };
         return d(gen);
     }
-    
+};
+
+class Airliner : public Plane
+{
+private:
+    string Airline;
+public:
+    Airliner(string& Airline, string& from, string& to) : Plane(from, to)
+    {
+        Airline = Airline;
+
+    }
+};
+
+class GeneralAviation : public Plane
+{
+
 };
 
 int main()
 {
-    
-
-
     return 0;
 }
