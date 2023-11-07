@@ -15,17 +15,17 @@ private:
     bool at_SCE;
     string origin, destination;
     // Container from Question 1
-    map<pair<string, string>, int> DistanceMap;
+    map<pair<string, string>, double> DistanceMap;
 public:
     // Constructor taking in two strings “from” and “to” as input arguments
-    Plane(string& from, string& to)
+    Plane(string from, string to)
         : pos(0.0), vel(0.0), distance(0.0), loiter_time(0.0), at_SCE(0){   // Initializing values at zero
-        DistanceMap[{"SCE", "PHL"}] = 160;
-        DistanceMap[{"SCE", "ORD"}] = 640;
-        DistanceMap[{"SCE", "EWR"}] = 220;
-        DistanceMap[{"PHL", "SCE"}] = 160;
-        DistanceMap[{"ORD", "SCE"}] = 640;
-        DistanceMap[{"EWR", "SCE"}] = 220;
+        DistanceMap[{"SCE", "PHL"}] = 160.0;
+        DistanceMap[{"SCE", "ORD"}] = 640.0;
+        DistanceMap[{"SCE", "EWR"}] = 220.0;
+        DistanceMap[{"PHL", "SCE"}] = 160.0;
+        DistanceMap[{"ORD", "SCE"}] = 640.0;
+        DistanceMap[{"EWR", "SCE"}] = 220.0;
         // Storing input strings
         origin = from;
         destination = to;
@@ -39,7 +39,7 @@ public:
     // “operate” function with a double variable “dt” as an input, and return nothing (void)
     void operate(double dt)
     {
-        if (loiter_time!=0.0)
+        if (loiter_time != 0.0)
         {
             loiter_time -= dt;
         }
@@ -51,7 +51,7 @@ public:
             }
             else
             {
-                if (pos<distance)
+                if (pos < distance)
                 {
                     pos += vel * dt;
                     at_SCE = 0;
@@ -115,8 +115,9 @@ public:
             return (distance-pos); 
         }
     }
-    virtual void time_on_ground()       // Might need to change "void"
+    virtual double time_on_ground()
     {
+        return wait_time;
     }
     virtual string plane_type()
     {
@@ -136,19 +137,53 @@ class Airliner : public Plane
 private:
     string Airline;
 public:
-    Airliner(string& Airline, string& from, string& to) : Plane(from, to)
+    // Constructor for Airliner
+    Airliner(string Airline, string from, string to) : Plane(from, to)
     {
         Airline = Airline;
 
+    }
+    // Deconstructor for Airliner
+    virtual ~Airliner()
+    {
+    }
+    // Overridden function "plane_type"
+    virtual string plane_type()
+    {
+        return Airline;
+    }
+    // Overridden function "time_on_ground"
+    virtual double time_on_ground()
+    {
+        wait_time = draw_from_normal_dist(1800.0, 600.0);
+        return wait_time;
     }
 };
 
 class GeneralAviation : public Plane
 {
+public:
+    // Constructor for GeneralAviation
+    GeneralAviation(string from, string to) : Plane(from, to)
+    {
 
+    }
+    // Deconstructor for GeneralAviation
+    virtual ~GeneralAviation()
+    {
+    }
+    // Overridden function "time_on_ground"
+    virtual double time_on_ground()
+    {
+        wait_time = draw_from_normal_dist(600.0, 60.0);
+        return wait_time;
+    }
 };
 
 int main()
 {
+    
+    // Plane plane1("SCE","ORD");
+    // cout << plane1.getPos() << endl; 
     return 0;
 }
