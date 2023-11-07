@@ -19,7 +19,7 @@ private:
 public:
     // Constructor taking in two strings “from” and “to” as input arguments
     Plane(string from, string to)
-        : pos(0.0), vel(0.0), distance(0.0), loiter_time(0.0), at_SCE(0){   // Initializing values at zero
+        : pos(0.0), vel(0.0), wait_time(0.0), loiter_time(0.0), at_SCE(0){   // Initializing values at zero
         DistanceMap[{"SCE", "PHL"}] = 160.0;
         DistanceMap[{"SCE", "ORD"}] = 640.0;
         DistanceMap[{"SCE", "EWR"}] = 220.0;
@@ -141,7 +141,6 @@ public:
     Airliner(string Airline, string from, string to) : Plane(from, to)
     {
         Airline = Airline;
-
     }
     // Deconstructor for Airliner
     virtual ~Airliner()
@@ -166,7 +165,6 @@ public:
     // Constructor for GeneralAviation
     GeneralAviation(string from, string to) : Plane(from, to)
     {
-
     }
     // Deconstructor for GeneralAviation
     virtual ~GeneralAviation()
@@ -182,8 +180,21 @@ public:
 
 int main()
 {
-    
-    // Plane plane1("SCE","ORD");
-    // cout << plane1.getPos() << endl; 
+    // Instantiating and settin velocities the seven flights from the table on number 5
+    Airliner flight1("AA","SCE","PHL"); flight1.setVel(470.0);
+    Airliner flight2("UA","SCE","ORD"); flight1.setVel(515.0);
+    Airliner flight3("UA","SCE","EWR"); flight1.setVel(480.0);
+    Airliner flight4("AA","SCE","ORD"); flight1.setVel(500.0);
+    GeneralAviation flight5("SCE","PHL"); flight1.setVel(140.0);
+    GeneralAviation flight6("SCE","EWR"); flight1.setVel(160.0);
+    GeneralAviation flight7("SCE","ORD"); flight1.setVel(180.0);
+    // Timestep
+    double timestep = 100;
+    // while (true)
+    // {
+    //     flight1.operate(timestep);
+    //     cout << flight1.getPos() << endl;
+    // }
+    cout << timestep << endl;
     return 0;
 }
