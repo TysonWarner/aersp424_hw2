@@ -3,9 +3,7 @@
 #include <map>
 #include <random>
 #include <cmath>
-
 using namespace std;
-
 class Plane
 {
 protected:
@@ -50,12 +48,20 @@ public:
             if (wait_time != 0.0)
             {
                 wait_time -= dt;
+                if (wait_time < 0.0)
+                {
+                    wait_time = 0.0;
+                }
             }
             else
             {
                 if (pos < distance)
                 {
                     pos += vel * dt;
+                    if (pos > distance)
+                    {
+                        pos = distance;
+                    }
                     at_SCE = 0;
                 }
                 else
@@ -64,24 +70,15 @@ public:
                     {
                         at_SCE = 1;
                     }
-                    else
-                    {
-                        time_on_ground();
-                        swap(origin,destination);
-                        pos = 0.0;
-                    }
+                    time_on_ground();
+                    swap(origin,destination);
+                    pos = 0.0;
                 }
             }
         }
-
-
-
-
-        
-        
     }
     // Adding required "get" functions
-    double getPos() const
+    double getPos()
     {
         return pos;
     }
@@ -191,26 +188,35 @@ public:
 int main()
 {
     // Instantiating and settin velocities the seven flights from the table on number 5
-    Airliner flight1("AA","PHL","SCE"); flight1.setVel(470.0/3600.0);
+    Airliner flight1("AA","SCE","PHL"); flight1.setVel(470.0/3600.0);
     Airliner flight2("UA","SCE","ORD"); flight2.setVel(515.0/3600.0);
     Airliner flight3("UA","SCE","EWR"); flight3.setVel(480.0/3600.0);
     Airliner flight4("AA","SCE","ORD"); flight4.setVel(500.0/3600.0);
     GeneralAviation flight5("SCE","PHL"); flight5.setVel(140.0/3600.0);
     GeneralAviation flight6("SCE","EWR"); flight6.setVel(160.0/3600.0);
     GeneralAviation flight7("SCE","ORD"); flight7.setVel(180.0/3600.0);
-    
     // Timestep
-    double timestep = 100.0;
-
-    // Calling position at each timestep 'dt'
-    // flight1.setLoiter_time(800);
+    double timestep = 10.0;
+    // Calling position at each timestep 'dt'    
+    int i = 0;
     while (true)
     {
+        cout << "\nAt timestep " << i << ":\n\n";
+        cout << "Position of flight 1: " << flight1.getPos() << endl;
         flight1.operate(timestep);
-        cout << flight1.getPos() << endl;
+        cout << "Position of flight 2: " << flight2.getPos() << endl;
+        flight2.operate(timestep);
+        cout << "Position of flight 3: " << flight3.getPos() << endl;
+        flight3.operate(timestep);
+        cout << "Position of flight 4: " << flight4.getPos() << endl;
+        flight4.operate(timestep);
+        cout << "Position of flight 5: " << flight5.getPos() << endl;
+        flight5.operate(timestep);
+        cout << "Position of flight 6: " << flight6.getPos() << endl;
+        flight6.operate(timestep);
+        cout << "Position of flight 7: " << flight7.getPos() << endl;
+        flight7.operate(timestep);
+        i++;
     }
-    
-
-
     return 0;
 }
