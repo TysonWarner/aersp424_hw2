@@ -3,6 +3,8 @@
 #include <map>
 #include <random>
 #include <cmath>
+#include <memory>
+#include <vector>
 using namespace std;
 class Plane
 {
@@ -32,7 +34,7 @@ public:
         // Setting value of distance
         distance = DistanceMap[{origin, destination}];
     }
-    // Virtual Deconstructor
+    // Virtual Destructor
     virtual ~Plane()
     {
     }
@@ -149,8 +151,8 @@ public:
     {
         Airline = Airline;
     }
-    // Deconstructor for Airliner
-    virtual ~Airliner()
+    // Destructor for Airliner
+    ~Airliner()
     {
     }
     // Overridden function "plane_type"
@@ -173,8 +175,8 @@ public:
     GeneralAviation(string from, string to) : Plane(from, to)
     {
     }
-    // Deconstructor for GeneralAviation
-    virtual ~GeneralAviation()
+    // Destructor for GeneralAviation
+    ~GeneralAviation()
     {
     }
     // Overridden function "time_on_ground"
@@ -185,38 +187,88 @@ public:
     }
 };
 
+class ATC
+{
+private:
+    vector<shared_ptr<Plane>> registered_planes;
+    int MAX_LANDED_PLANE_NUM = 2;
+    int AIRSPACE_DISTANCE = 50;
+public:
+    // Constructor
+    ATC()
+    {
+    }
+    // Destructor
+    ~ATC()
+    {
+    }
+    // Function to register a plane
+    void register_plane(shared_ptr<Plane> plane)
+    {
+        registered_planes.push_back(plane);
+    }
+    // Function to access the registered_planes container
+    const vector<shared_ptr<Plane>>& get_registered_planes() const
+    {
+        return registered_planes;
+    }
+    // Function to control traffic using the registered planes
+    void control_traffic()
+    {
+        for (auto& plane : registered_planes)
+        {
+            bool at_SCE = plane->getAt_SCE();
+            double loiter_time = plane->getLoiter_time();
+
+            // Add traffic control logic here
+        }
+    }
+};
+
 int main()
 {
-    // Instantiating and settin velocities the seven flights from the table on number 5
-    Airliner flight1("AA","SCE","PHL"); flight1.setVel(470.0/3600.0);
-    Airliner flight2("UA","SCE","ORD"); flight2.setVel(515.0/3600.0);
-    Airliner flight3("UA","SCE","EWR"); flight3.setVel(480.0/3600.0);
-    Airliner flight4("AA","SCE","ORD"); flight4.setVel(500.0/3600.0);
-    GeneralAviation flight5("SCE","PHL"); flight5.setVel(140.0/3600.0);
-    GeneralAviation flight6("SCE","EWR"); flight6.setVel(160.0/3600.0);
-    GeneralAviation flight7("SCE","ORD"); flight7.setVel(180.0/3600.0);
-    // Timestep
-    double timestep = 10.0;
-    // Calling position at each timestep 'dt'    
-    int i = 0;
-    while (true)
-    {
-        cout << "\nAt timestep " << i << ":\n\n";
-        cout << "Position of flight 1: " << flight1.getPos() << endl;
-        flight1.operate(timestep);
-        cout << "Position of flight 2: " << flight2.getPos() << endl;
-        flight2.operate(timestep);
-        cout << "Position of flight 3: " << flight3.getPos() << endl;
-        flight3.operate(timestep);
-        cout << "Position of flight 4: " << flight4.getPos() << endl;
-        flight4.operate(timestep);
-        cout << "Position of flight 5: " << flight5.getPos() << endl;
-        flight5.operate(timestep);
-        cout << "Position of flight 6: " << flight6.getPos() << endl;
-        flight6.operate(timestep);
-        cout << "Position of flight 7: " << flight7.getPos() << endl;
-        flight7.operate(timestep);
-        i++;
-    }
+    ATC atc;    // Creating an ATC object
+    atc.register_plane(make_shared<Airliner>("AA", "SCE", "PHL"));
+    atc.register_plane(make_shared<Airliner>("UA", "SCE", "ORD"));
+    atc.register_plane(make_shared<Airliner>("UA", "SCE", "EWR"));
+    atc.register_plane(make_shared<Airliner>("AA", "SCE", "ORD"));
+    atc.register_plane(make_shared<GeneralAviation>("SCE", "PHL"));
+    atc.register_plane(make_shared<GeneralAviation>("SCE", "EWR"));
+    atc.register_plane(make_shared<GeneralAviation>("SCE", "ORD"));
+
+
+
+
+    // // Instantiating and settin velocities the seven flights from the table on number 5
+    // Airliner flight1("AA","SCE","PHL"); flight1.setVel(470.0/3600.0);
+    // Airliner flight2("UA","SCE","ORD"); flight2.setVel(515.0/3600.0);
+    // Airliner flight3("UA","SCE","EWR"); flight3.setVel(480.0/3600.0);
+    // Airliner flight4("AA","SCE","ORD"); flight4.setVel(500.0/3600.0);
+    // GeneralAviation flight5("SCE","PHL"); flight5.setVel(140.0/3600.0);
+    // GeneralAviation flight6("SCE","EWR"); flight6.setVel(160.0/3600.0);
+    // GeneralAviation flight7("SCE","ORD"); flight7.setVel(180.0/3600.0);
+    // // Timestep
+    // double timestep = 10.0;
+    // // Calling position at each timestep 'dt'    
+    // int i = 0;
+    // while (true)
+    // {
+    //     cout << "\nAt timestep " << i << ":\n\n";
+    //     cout << "Position of flight 1: " << flight1.getPos() << endl;
+    //     flight1.operate(timestep);
+    //     cout << "Position of flight 2: " << flight2.getPos() << endl;
+    //     flight2.operate(timestep);
+    //     cout << "Position of flight 3: " << flight3.getPos() << endl;
+    //     flight3.operate(timestep);
+    //     cout << "Position of flight 4: " << flight4.getPos() << endl;
+    //     flight4.operate(timestep);
+    //     cout << "Position of flight 5: " << flight5.getPos() << endl;
+    //     flight5.operate(timestep);
+    //     cout << "Position of flight 6: " << flight6.getPos() << endl;
+    //     flight6.operate(timestep);
+    //     cout << "Position of flight 7: " << flight7.getPos() << endl;
+    //     flight7.operate(timestep);
+    //     i++;
+    // }
     return 0;
 }
