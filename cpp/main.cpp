@@ -2,7 +2,6 @@
 #include <string>
 #include <map>
 #include <random>
-#include <cmath>
 #include <memory>
 #include <vector>
 using namespace std;
@@ -208,7 +207,7 @@ public:
         registered_planes.push_back(plane);
     }
     // Function to access the registered_planes container
-    const vector<shared_ptr<Plane>>& get_registered_planes() const
+    const vector<shared_ptr<Plane>>& get_registered_planes()
     {
         return registered_planes;
     }
@@ -219,8 +218,10 @@ public:
         {
             bool at_SCE = plane->getAt_SCE();
             double loiter_time = plane->getLoiter_time();
+            double distance_to_SCE = plane->distance_to_SCE();
 
             int landed_planes = 0;
+            
             int i = 0;
             while (i < registered_planes.size())
             {
@@ -232,36 +233,59 @@ public:
                 if (landed_planes >= MAX_LANDED_PLANE_NUM)
                 {
                     i = 0;
-                    if (i < registered_planes.size())
+                    while (i < registered_planes.size())
                     {
-                        
+                        if (at_SCE==0 && distance_to_SCE <= AIRSPACE_DISTANCE && loiter_time == 0)
+                        {
+                            loiter_time = 100.0;
+                        }
                     }
                 }
             }
-
         }
     }
+    
+
+
 };
 
 int main()
 {
-    // ATC atc;    // Creating an ATC object
-    // atc.register_plane(make_shared<Airliner>("AA", "SCE", "PHL"));
-    // atc.register_plane(make_shared<Airliner>("UA", "SCE", "ORD"));
-    // atc.register_plane(make_shared<Airliner>("UA", "SCE", "EWR"));
-    // atc.register_plane(make_shared<Airliner>("AA", "SCE", "ORD"));
-    // atc.register_plane(make_shared<GeneralAviation>("SCE", "PHL"));
-    // atc.register_plane(make_shared<GeneralAviation>("SCE", "EWR"));
-    // atc.register_plane(make_shared<GeneralAviation>("SCE", "ORD"));
+    ATC atc; // Instantiating an ATC object
 
-    ATC atc;    // Creating an ATC object
-    auto airliner_ptr = make_shared<Airliner>("AA", "SCE", "PHL");
-    atc.register_plane(airliner_ptr);
+    // Registering planes
+    atc.register_plane(make_shared<Airliner>("AA", "SCE", "PHL"));
+    atc.register_plane(make_shared<Airliner>("UA","SCE","ORD"));
+    atc.register_plane(make_shared<Airliner>("UA","SCE","EWR"));
+    atc.register_plane(make_shared<Airliner>("AA","SCE","ORD"));
+    atc.register_plane(make_shared<GeneralAviation>("SCE","PHL"));
+    atc.register_plane(make_shared<GeneralAviation>("SCE","EWR"));
+    atc.register_plane(make_shared<GeneralAviation>("SCE","ORD"));
+    atc.get_registered_planes()[0]->setVel(470.0 / 3600.0);
+    atc.get_registered_planes()[1]->setVel(515.0 / 3600.0);
+    atc.get_registered_planes()[2]->setVel(480.0 / 3600.0);
+    atc.get_registered_planes()[3]->setVel(500.0 / 3600.0);
+    atc.get_registered_planes()[4]->setVel(140.0 / 3600.0);
+    atc.get_registered_planes()[5]->setVel(160.0 / 3600.0);
+    atc.get_registered_planes()[6]->setVel(180.0 / 3600.0);
 
-    // Accessing pos from the registered Airliner
-    double pos_of_airliner = airliner_ptr->getPos();
-    cout << "Position of the registered Airliner: " << pos_of_airliner << endl;
-
+    // Timestep
+    double timestep = 10.0;
+    // Calling position at each timestep 'dt'    
+    int i = 0;
+    while (true)
+    {
+        cout << "\nAt timestep " << i << ":\n\n";
+        int planeNumber = 1;
+        for (auto& plane : atc.get_registered_planes())
+        {
+            cout << "Position of plane " << planeNumber << ": " << plane->getPos() << endl;
+            plane->operate(timestep);
+            planeNumber++;
+        }
+        atc.control_traffic();
+        i++;
+    }
 
 
 
