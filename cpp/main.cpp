@@ -149,7 +149,7 @@ public:
     // Constructor for Airliner
     Airliner(string Airline, string from, string to) : Plane(from, to)
     {
-        Airline = Airline;
+        this->Airline = Airline;
     }
     // Destructor for Airliner
     ~Airliner()
@@ -220,21 +220,48 @@ public:
             bool at_SCE = plane->getAt_SCE();
             double loiter_time = plane->getLoiter_time();
 
-            // Add traffic control logic here
+            int landed_planes = 0;
+            int i = 0;
+            while (i < registered_planes.size())
+            {
+                landed_planes += at_SCE;
+                i++;
+            }
+            if (i >= registered_planes.size())
+            {
+                if (landed_planes >= MAX_LANDED_PLANE_NUM)
+                {
+                    i = 0;
+                    if (i < registered_planes.size())
+                    {
+                        
+                    }
+                }
+            }
+
         }
     }
 };
 
 int main()
 {
+    // ATC atc;    // Creating an ATC object
+    // atc.register_plane(make_shared<Airliner>("AA", "SCE", "PHL"));
+    // atc.register_plane(make_shared<Airliner>("UA", "SCE", "ORD"));
+    // atc.register_plane(make_shared<Airliner>("UA", "SCE", "EWR"));
+    // atc.register_plane(make_shared<Airliner>("AA", "SCE", "ORD"));
+    // atc.register_plane(make_shared<GeneralAviation>("SCE", "PHL"));
+    // atc.register_plane(make_shared<GeneralAviation>("SCE", "EWR"));
+    // atc.register_plane(make_shared<GeneralAviation>("SCE", "ORD"));
+
     ATC atc;    // Creating an ATC object
-    atc.register_plane(make_shared<Airliner>("AA", "SCE", "PHL"));
-    atc.register_plane(make_shared<Airliner>("UA", "SCE", "ORD"));
-    atc.register_plane(make_shared<Airliner>("UA", "SCE", "EWR"));
-    atc.register_plane(make_shared<Airliner>("AA", "SCE", "ORD"));
-    atc.register_plane(make_shared<GeneralAviation>("SCE", "PHL"));
-    atc.register_plane(make_shared<GeneralAviation>("SCE", "EWR"));
-    atc.register_plane(make_shared<GeneralAviation>("SCE", "ORD"));
+    auto airliner_ptr = make_shared<Airliner>("AA", "SCE", "PHL");
+    atc.register_plane(airliner_ptr);
+
+    // Accessing pos from the registered Airliner
+    double pos_of_airliner = airliner_ptr->getPos();
+    cout << "Position of the registered Airliner: " << pos_of_airliner << endl;
+
 
 
 
@@ -247,6 +274,7 @@ int main()
     // GeneralAviation flight5("SCE","PHL"); flight5.setVel(140.0/3600.0);
     // GeneralAviation flight6("SCE","EWR"); flight6.setVel(160.0/3600.0);
     // GeneralAviation flight7("SCE","ORD"); flight7.setVel(180.0/3600.0);
+
     // // Timestep
     // double timestep = 10.0;
     // // Calling position at each timestep 'dt'    
